@@ -37,25 +37,8 @@ jobs:
         path: app/build/outputs/apk/debug/app-debug.apk
         retention-days: 7
     
-    - name: Create Release
+    - name: Upload to Release
       if: startsWith(github.ref, 'refs/tags/')
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v1
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Buffalo Predictor ${{ github.ref }}
-        body: Buffalo Milk Predictor Android Application
-        draft: false
-        prerelease: false
-    
-    - name: Upload Release Asset
-      if: startsWith(github.ref, 'refs/tags/')
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: app/build/outputs/apk/debug/app-debug.apk
-        asset_name: buffalo-predictor-debug.apk
-        asset_content_type: application/vnd.android.package-archive
+        files: app/build/outputs/apk/debug/app-debug.apk
