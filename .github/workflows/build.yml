@@ -31,6 +31,9 @@ jobs:
     - name: Grant execute permissions to gradlew
       run: chmod +x gradlew
     
+    - name: Set Android SDK path in local.properties
+      run: echo "sdk.dir=$ANDROID_HOME" > local.properties
+    
     - name: Build with Gradle
       run: ./gradlew assembleDebug --stacktrace
       env:
