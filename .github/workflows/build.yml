@@ -25,8 +25,13 @@ jobs:
     
     - name: Setup Android SDK
       run: |
+        echo "=== Environment ==="
         echo "ANDROID_HOME=$ANDROID_HOME"
-        echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0" 2>/dev/null || true
+        echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+        ls $ANDROID_HOME/platforms/ 2>/dev/null || echo "No platforms dir"
+        ls $ANDROID_HOME/build-tools/ 2>/dev/null || echo "No build-tools dir"
+        echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses 2>/dev/null || true
+        echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-34" "build-tools;34.0.0" 2>/dev/null || true
     
     - name: Grant execute permissions to gradlew
       run: chmod +x gradlew
