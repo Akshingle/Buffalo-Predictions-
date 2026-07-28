@@ -38,7 +38,13 @@ jobs:
         file gradlew
         java -version
         ./gradlew --version || echo "GRADLEW VERSION FAILED"
-        ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 || exit 1
+        ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 | tee /tmp/build.log || (
+          echo "## Build Failed" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          tail -50 /tmp/build.log >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          exit 1
+        )
     
     - name: Upload APK to artifacts
       if: success()
