@@ -31,17 +31,11 @@ jobs:
     
     - name: Build APK
       run: |
+        # Fix Windows CRLF line endings in gradlew script
+        sed -i 's/\r$//' gradlew
         chmod +x ./gradlew
         echo "sdk.dir=/usr/local/lib/android/sdk" > local.properties
-        echo "=== Java version ==="
-        java -version
-        echo "=== Gradle version ==="
-        ./gradlew --version
-        echo "=== SDK check ==="
-        ls /usr/local/lib/android/sdk/platforms/ 2>/dev/null | grep -E "android-" || echo "Platform dirs not found"
-        ls /usr/local/lib/android/sdk/build-tools/ 2>/dev/null | grep -E "34" || echo "Build tools 34 not found"
-        echo "=== Build ==="
-        ./gradlew assembleDebug --no-daemon --info 2>&1 | tail -100
+        ./gradlew assembleDebug --no-daemon
     
     - name: Upload APK to artifacts
       if: success()
