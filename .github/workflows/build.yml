@@ -30,21 +30,25 @@ jobs:
     
     - name: Build APK
       run: |
-        set -x
+        set -o pipefail
         sed -i 's/\r$//' gradlew
         chmod +x ./gradlew
         echo "sdk.dir=/usr/local/lib/android/sdk" > local.properties
-        cat gradlew | head -3
-        file gradlew
-        java -version
-        ./gradlew --version || echo "GRADLEW VERSION FAILED"
-        ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 | tee /tmp/build.log || (
-          echo "## Build Failed" >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          tail -50 /tmp/build.log >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          exit 1
-        )
+        
+        # Run gradle and capture output, explicitly check exit code
+        ./gradlew assembleDebug --no-daemon --stacktrace > /tmp/build.log 2>&1
+        GRADLE_EXIT=$?
+        
+        # Always show last 100 lines in summary
+        echo "## Build Output (last 100 lines)" >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+        tail -100 /tmp/build.log >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+        
+        # Print to step log
+        cat /tmp/build.log
+        
+        exit $GRADLE_EXIT
     
     - name: Upload APK to artifacts
       if: success()
