@@ -33,7 +33,15 @@ jobs:
       run: |
         chmod +x ./gradlew
         echo "sdk.dir=/usr/local/lib/android/sdk" > local.properties
-        ./gradlew assembleDebug --no-daemon
+        echo "=== Java version ==="
+        java -version
+        echo "=== Gradle version ==="
+        ./gradlew --version
+        echo "=== SDK check ==="
+        ls /usr/local/lib/android/sdk/platforms/ 2>/dev/null | grep -E "android-" || echo "Platform dirs not found"
+        ls /usr/local/lib/android/sdk/build-tools/ 2>/dev/null | grep -E "34" || echo "Build tools 34 not found"
+        echo "=== Build ==="
+        ./gradlew assembleDebug --no-daemon --info 2>&1 | tail -100
     
     - name: Upload APK to artifacts
       if: success()
