@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Buffalo Milk Predictor</string>
+    <string name="app_description">AI-Powered Dairy Buffalo Analysis</string>
+    
+    <!-- Home Screen -->
+    <string name="analyze_buffalo">Analyze Buffalo</string>
+    <string name="analyze_buffalo_desc">Capture photos and analyze milk production potential</string>
+    <string name="analysis_history">Analysis History</string>
+    <string name="analysis_history_desc">View previous analyses and predictions</string>
+    <string name="settings">Settings</string>
+    <string name="settings_desc">Configure app preferences and language</string>
+    
+    <!-- Common -->
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="submit">Submit</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="back">Back</string>
+    <string name="loading">Loading...</string>
+    <string name="error">Error</string>
+    <string name="success">Success</string>
+    
+    <!-- Camera -->
+    <string name="camera_permission_required">Camera permission is required</string>
+    <string name="camera_permission_denied">Camera permission denied</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="retake">Retake</string>
+    <string name="capture">Capture</string>
+    
+    <!-- Analysis -->
+    <string name="analyzing">Analyzing buffalo...</string>
+    <string name="analysis_complete">Analysis Complete</string>
+    <string name="breed">Breed</string>
+    <string name="confidence">Confidence</string>
+    <string name="score">Score</string>
+    
+    <!-- Results -->
+    <string name="milk_prediction">Milk Prediction</string>
+    <string name="production_range">Production Range</string>
+    <string name="recommendation">Recommendation</string>
+    <string name="excellent_purchase">Excellent Purchase</string>
+    <string name="good_purchase">Good Purchase</string>
+    <string name="average">Average</string>
+    <string name="avoid_buying">Avoid Buying</string>
+    <string name="reject_immediately">Reject Immediately</string>
+    
+    <!-- PDF Report -->
+    <string name="generate_report">Generate Report</string>
+    <string name="report_generated">Report generated successfully</string>
+    <string name="share_report">Share Report</string>
+    
+    <!-- Settings -->
+    <string name="language">Language</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="about">About</string>
+    <string name="version">Version</string>
+</resources>

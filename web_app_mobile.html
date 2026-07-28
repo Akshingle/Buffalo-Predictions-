@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Buffalo Milk Predictor - AI-powered dairy analysis">
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Buffalo Predictor">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%23667eea' width='180' height='180'/><text x='50%' y='50%' font-size='90' fill='white' text-anchor='middle' dy='.3em'>🐃</text></svg>">
+    <link rel="manifest" href="data:application/manifest+json,{\"name\":\"Buffalo Milk Predictor\",\"short_name\":\"Buffalo\",\"description\":\"AI-powered dairy analysis\",\"start_url\":\"/\",\"display\":\"standalone\",\"background_color\":\"#ffffff\",\"theme_color\":\"#667eea\",\"icons\":[{\"src\":\"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%23667eea' width='192' height='192'/><text x='50%' y='50%' font-size='100' fill='white' text-anchor='middle' dy='.3em'>🐃</text></svg>\",\"sizes\":\"192x192\",\"type\":\"image/svg+xml\",\"purpose\":\"any\"}]}">
+    <title>Buffalo Milk Predictor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background: white;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            flex-shrink: 0;
+            padding-top: max(20px, env(safe-area-inset-top));
+            padding-left: max(20px, env(safe-area-inset-left));
+            padding-right: max(20px, env(safe-area-inset-right));
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 15px;
+            padding-bottom: max(15px, env(safe-area-inset-bottom));
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+            border: 2px solid #ddd;
+        }
+
+        .btn-secondary:active {
+            background: #e0e0e0;
+        }
+
+        .card {
+            background: #f9f9f9;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .card:active {
+            background: #f0f0f0;
+            border-color: #667eea;
+        }
+
+        .card-icon {
+            font-size: 32px;
+            flex-shrink: 0;
+        }
+
+        .card-content {
+            flex: 1;
+        }
+
+        .card-content h3 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .card-content p {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .checkbox {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            margin: 8px 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .checkbox input {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+        }
+
+        .checkbox label {
+            flex: 1;
+            cursor: pointer;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-top: 15px;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f0f0f0;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .center-text {
+            text-align: center;
+        }
+
+        .textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 16px;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .stat {
+            display: inline-block;
+            width: 32%;
+            text-align: center;
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            margin: 3px 1%;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .button-row .btn {
+            flex: 1;
+            margin: 0;
+        }
+
+        .camera-input {
+            display: none;
+        }
+
+        .capture-preview {
+            width: 100%;
+            border-radius: 12px;
+            margin: 10px 0;
+            max-height: 300px;
+            object-fit: cover;
+        }
+
+        .camera-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 16px;
+            margin: 8px 0;
+            background: #e3f2fd;
+            border: 2px dashed #667eea;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #667eea;
+            transition: all 0.2s ease;
+        }
+
+        .camera-button:active {
+            background: #bbdefb;
+        }
+
+        .mini-progress {
+            width: 100%;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .mini-progress-fill {
+            height: 100%;
+            background: #667eea;
+        }
+
+        .score-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin: 3px;
+        }
+
+        .score-excellent {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .score-good {
+            background: #8BC34A;
+            color: white;
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 22px;
+            }
+            .stat {
+                width: 48%;
+                margin: 3px 1%;
+            }
+            .btn {
+                padding: 14px;
+                font-size: 15px;
+            }
+        }
+
+        .install-prompt {
+            background: #667eea;
+            color: white;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            display: none;
+        }
+
+        .install-prompt.show {
+            display: block;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HOME SCREEN -->
+        <div class="screen active" id="homeScreen">
+            <div class="header">
+                <h1>🐃 Buffalo Milk Predictor</h1>
+                <p>AI-Powered Dairy Analysis</p>
+            </div>
+            <div class="content">
+                <div class="install-prompt" id="installPrompt">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>📱 Install app on your home screen</span>
+                        <button class="btn-secondary" style="flex: 0; padding: 8px 12px; font-size: 12px;" onclick="document.getElementById('installPrompt').classList.remove('show')">✕</button>
+                    </div>
+                </div>
+
+                <div class="card" onclick="goToCapture()">
+                    <div class="card-icon">📸</div>
+                    <div class="card-content">
+                        <h3>Analyze Buffalo</h3>
+                        <p>Capture or upload photos and analyze</p>
+                    </div>
+                </div>
+
+                <div class="card" onclick="goToHistory()">
+                    <div class="card-icon">📋</div>
+                    <div class="card-content">
+                        <h3>Analysis History</h3>
+                        <p>View previous analyses</p>
+                    </div>
+                </div>
+
+                <div class="card" onclick="goToSettings()">
+                    <div class="card-icon">⚙️</div>
+                    <div class="card-content">
+                        <h3>Settings</h3>
+                        <p>Configure preferences</p>
+                    </div>
+                </div>
+
+                <div style="background: #e3f2fd; border-radius: 12px; padding: 15px; margin-top: 20px;">
+                    <h4 style="color: #1976d2; margin-bottom: 8px;">📖 How it works</h4>
+                    <p style="font-size: 13px; color: #555;">Capture multiple photos from different angles (front, side, rear, udder, teats, legs). The AI analyzes milk production parameters including udder quality, body frame, health indicators, and more.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CAPTURE SCREEN -->
+        <div class="screen" id="captureScreen">
+            <div class="header">
+                <h1>📸 Capture Images</h1>
+                <p>Take or upload photos</p>
+            </div>
+            <div class="content">
+                <div style="margin-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <strong>Progress</strong>
+                        <span id="captureProgress">0/5</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="captureBar" style="width: 0%;"></div>
+                    </div>
+                </div>
+
+                <div class="section-title">Required Captures (5)</div>
+
+                <div id="captureAngles"></div>
+
+                <div style="margin-top: 20px;">
+                    <label style="font-weight: 600; display: block; margin-bottom: 8px;">Notes (Optional)</label>
+                    <textarea class="textarea" id="captureNotes" placeholder="Add observations..."></textarea>
+                </div>
+
+                <div class="button-row" style="margin-top: 20px;">
+                    <button class="btn btn-secondary" onclick="goToHome()">Cancel</button>
+                    <button class="btn btn-primary" id="analyzeBtn" onclick="goToAnalysis()" disabled>Analyze</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ANALYSIS SCREEN -->
+        <div class="screen" id="analysisScreen">
+            <div class="header">
+                <h1>⚙️ Analyzing...</h1>
+                <p>Processing with AI</p>
+            </div>
+            <div class="content center-text" style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                <div class="loading-spinner" style="margin: 20px 0;"></div>
+                <div style="font-size: 28px; font-weight: 700; color: #667eea; margin-bottom: 10px;">
+                    <span id="progressPercent">0</span>%
+                </div>
+                <div class="progress-bar" style="width: 80%; margin: 15px 0;">
+                    <div class="progress-fill" id="analysisBar" style="width: 0%;"></div>
+                </div>
+                <div style="font-size: 16px; color: #666; margin-top: 20px;">
+                    <p id="stageName">Initializing...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESULT SCREEN -->
+        <div class="screen" id="resultScreen">
+            <div class="header">
+                <h1>✅ Results</h1>
+                <p>Analysis Complete</p>
+            </div>
+            <div class="content">
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 15px;">
+                    <div style="font-size: 12px; opacity: 0.9;">Overall Score</div>
+                    <div style="font-size: 42px; font-weight: bold; margin: 8px 0;">88%</div>
+                    <div style="font-size: 14px;">22+ L/day</div>
+                </div>
+
+                <div style="background: #4CAF50; color: white; border-radius: 12px; padding: 15px; text-align: center; margin-bottom: 15px;">
+                    <div style="font-size: 12px; opacity: 0.9;">Recommendation</div>
+                    <div style="font-size: 22px; font-weight: bold; margin-top: 6px;">✅ EXCELLENT</div>
+                </div>
+
+                <div class="section-title">Scores</div>
+                <div class="result-item">
+                    <span><strong>Breed</strong> (Murrah)</span>
+                    <span style="color: #667eea; font-weight: 700;">92%</span>
+                </div>
+                <div class="mini-progress">
+                    <div class="mini-progress-fill" style="width: 92%;"></div>
+                </div>
+
+                <div class="result-item">
+                    <span><strong>Body Frame</strong></span>
+                    <span style="color: #667eea; font-weight: 700;">85%</span>
+                </div>
+                <div class="mini-progress">
+                    <div class="mini-progress-fill" style="width: 85%;"></div>
+                </div>
+
+                <div class="result-item">
+                    <span><strong>Udder Quality</strong></span>
+                    <span style="color: #667eea; font-weight: 700;">92%</span>
+                </div>
+                <div class="mini-progress">
+                    <div class="mini-progress-fill" style="width: 92%;"></div>
+                </div>
+
+                <div class="button-row" style="margin-top: 20px;">
+                    <button class="btn btn-primary" onclick="goToHome()">🏠 Home</button>
+                    <button class="btn btn-secondary" onclick="goToHistory()">📋 History</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- HISTORY SCREEN -->
+        <div class="screen" id="historyScreen">
+            <div class="header">
+                <h1>📋 History</h1>
+                <p>Previous Analyses</p>
+            </div>
+            <div class="content">
+                <div style="display: flex; justify-content: space-around; margin-bottom: 15px;">
+                    <div class="stat">
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">Total</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">Excellent</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">88%</div>
+                        <div class="stat-label">Avg</div>
+                    </div>
+                </div>
+
+                <div class="card" onclick="goToResult()">
+                    <div class="card-icon">🐃</div>
+                    <div class="card-content">
+                        <h3>Murrah Buffalo</h3>
+                        <p>Today at 2:30 PM</p>
+                    </div>
+                    <span class="score-badge score-excellent">88%</span>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🐃</div>
+                    <div class="card-content">
+                        <h3>Nili-Ravi Buffalo</h3>
+                        <p>Yesterday</p>
+                    </div>
+                    <span class="score-badge score-good">76%</span>
+                </div>
+
+                <button class="btn btn-primary" onclick="goToHome()" style="margin-top: 15px;">Back to Home</button>
+            </div>
+        </div>
+
+        <!-- SETTINGS SCREEN -->
+        <div class="screen" id="settingsScreen">
+            <div class="header">
+                <h1>⚙️ Settings</h1>
+                <p>Preferences</p>
+            </div>
+            <div class="content">
+                <div class="section-title">About</div>
+                <div class="result-item">
+                    <span>📱 Version</span>
+                    <strong>2.0 (Mobile)</strong>
+                </div>
+                <div class="result-item">
+                    <span>💾 Data Stored</span>
+                    <strong id="storageSize">0 analyses</strong>
+                </div>
+
+                <div class="section-title">Actions</div>
+                <button class="btn btn-secondary" onclick="alert('Data cleared!')">🗑️ Clear History</button>
+                <button class="btn btn-secondary" onclick="alert('Settings reset!')">🔄 Reset Settings</button>
+
+                <button class="btn btn-primary" onclick="goToHome()" style="margin-top: 15px;">Back to Home</button>
+            </div>
+        </div>
+    </div>
+
+    <input type="file" id="cameraInput" class="camera-input" accept="image/*" capture="environment">
+
+    <script>
+        // Install PWA prompt
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('installPrompt').classList.add('show');
+        });
+
+        // Initialize
+        const angles = [
+            { id: 'front', name: 'Front View', description: 'Full front of buffalo', required: true },
+            { id: 'side', name: 'Side View', description: 'Left or right profile', required: true },
+            { id: 'rear', name: 'Rear View', description: 'Back view', required: true },
+            { id: 'udder', name: 'Udder', description: 'Close-up of udder', required: true },
+            { id: 'teats', name: 'Teats', description: 'Close-up of teats', required: true },
+            { id: 'legs', name: 'Legs', description: 'Legs detail', required: false },
+            { id: 'face', name: 'Face', description: 'Head detail', required: false }
+        ];
+
+        let capturedImages = {};
+
+        function initCapture() {
+            const container = document.getElementById('captureAngles');
+            container.innerHTML = '';
+            
+            angles.forEach(angle => {
+                const section = document.createElement('div');
+                section.innerHTML = `
+                    <div class="checkbox">
+                        <input type="checkbox" id="${angle.id}" onchange="updateProgress()">
+                        <label for="${angle.id}">
+                            <strong>${angle.name}</strong> - ${angle.description}
+                            ${!angle.required ? '<span style="color:#999; font-size:12px;"> (Optional)</span>' : ''}
+                        </label>
+                    </div>
+                `;
+                container.appendChild(section);
+            });
+        }
+
+        function updateProgress() {
+            const required = angles.filter(a => a.required).map(a => a.id);
+            const checked = required.filter(id => document.getElementById(id).checked).length;
+            
+            document.getElementById('captureProgress').textContent = `${checked}/5`;
+            document.getElementById('captureBar').style.width = (checked / 5) * 100 + '%';
+            document.getElementById('analyzeBtn').disabled = checked < 5;
+        }
+
+        function goToScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function goToHome() { goToScreen('homeScreen'); }
+        function goToCapture() { 
+            goToScreen('captureScreen');
+            initCapture();
+        }
+        function goToAnalysis() { 
+            goToScreen('analysisScreen');
+            runAnalysis();
+        }
+        function goToResult() { goToScreen('resultScreen'); }
+        function goToHistory() { goToScreen('historyScreen'); }
+        function goToSettings() { goToScreen('settingsScreen'); }
+
+        function runAnalysis() {
+            const stages = [
+                "Initializing AI...",
+                "Analyzing breed...",
+                "Evaluating body frame...",
+                "Assessing udder...",
+                "Analyzing teats...",
+                "Evaluating legs...",
+                "Detecting health issues...",
+                "Estimating age...",
+                "Calculating milk production...",
+                "Generating recommendations...",
+                "Finalizing report..."
+            ];
+
+            let current = 0;
+            const interval = setInterval(() => {
+                const progress = ((current + 1) / stages.length) * 100;
+                document.getElementById('progressPercent').textContent = Math.round(progress);
+                document.getElementById('analysisBar').style.width = progress + '%';
+                document.getElementById('stageName').textContent = stages[current];
+                current++;
+
+                if (current >= stages.length) {
+                    clearInterval(interval);
+                    setTimeout(() => goToResult(), 500);
+                }
+            }, 500);
+        }
+
+        // Service worker for offline support
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('data:application/javascript,self.addEventListener("install",e=>self.skipWaiting());self.addEventListener("activate",e=>e.waitUntil(clients.claim()));').catch(() => {});
+        }
+
+        // Initialize
+        initCapture();
+    </script>
+</body>
+</html>

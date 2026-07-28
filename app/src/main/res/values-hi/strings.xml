@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Buffalo Milk Predictor</string>
+    <string name="app_description">AI-संचालित डेयरी भैंस विश्लेषण</string>
+    
+    <!-- Home Screen -->
+    <string name="analyze_buffalo">भैंस का विश्लेषण करें</string>
+    <string name="analyze_buffalo_desc">दूध उत्पादन क्षमता का विश्लेषण करने के लिए फ़ोटो कैप्चर करें</string>
+    <string name="analysis_history">विश्लेषण इतिहास</string>
+    <string name="analysis_history_desc">पिछले विश्लेषण और भविष्यवाणियां देखें</string>
+    <string name="settings">सेटिंग्स</string>
+    <string name="settings_desc">ऐप प्राथमिकताएं और भाषा कॉन्फ़िगर करें</string>
+    
+    <!-- Common -->
+    <string name="next">आगे</string>
+    <string name="previous">पिछला</string>
+    <string name="submit">जमा करें</string>
+    <string name="cancel">रद्द करें</string>
+    <string name="confirm">पुष्टि करें</string>
+    <string name="save">सहेजें</string>
+    <string name="delete">हटाएं</string>
+    <string name="edit">संपादित करें</string>
+    <string name="back">वापस</string>
+    <string name="loading">लोड हो रहा है...</string>
+    <string name="error">त्रुटि</string>
+    <string name="success">सफल</string>
+    
+    <!-- Camera -->
+    <string name="camera_permission_required">कैमरा अनुमति आवश्यक है</string>
+    <string name="camera_permission_denied">कैमरा अनुमति अस्वीकृत</string>
+    <string name="take_photo">फ़ोटो लें</string>
+    <string name="retake">पुनः लें</string>
+    <string name="capture">कैप्चर करें</string>
+    
+    <!-- Analysis -->
+    <string name="analyzing">भैंस का विश्लेषण जारी है...</string>
+    <string name="analysis_complete">विश्लेषण पूर्ण</string>
+    <string name="breed">नस्ल</string>
+    <string name="confidence">आत्मविश्वास</string>
+    <string name="score">स्कोर</string>
+    
+    <!-- Results -->
+    <string name="milk_prediction">दूध की भविष्यवाणी</string>
+    <string name="production_range">उत्पादन रेंज</string>
+    <string name="recommendation">सिफारिश</string>
+    <string name="excellent_purchase">बेहतरीन खरीद</string>
+    <string name="good_purchase">अच्छी खरीद</string>
+    <string name="average">औसत</string>
+    <string name="avoid_buying">खरीदने से बचें</string>
+    <string name="reject_immediately">तुरंत अस्वीकार करें</string>
+    
+    <!-- PDF Report -->
+    <string name="generate_report">रिपोर्ट जेनरेट करें</string>
+    <string name="report_generated">रिपोर्ट सफलतापूर्वक तैयार की गई</string>
+    <string name="share_report">रिपोर्ट साझा करें</string>
+    
+    <!-- Settings -->
+    <string name="language">भाषा</string>
+    <string name="dark_mode">गहरा मोड</string>
+    <string name="about">बारे में</string>
+    <string name="version">संस्करण</string>
+</resources>

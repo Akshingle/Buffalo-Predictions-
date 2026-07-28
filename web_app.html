@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buffalo Milk Predictor</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px 20px;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+            border: 2px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .card {
+            background: #f9f9f9;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            background: #f0f0f0;
+            border-color: #667eea;
+        }
+
+        .card-icon {
+            font-size: 32px;
+        }
+
+        .card-content h3 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .card-content p {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .checkbox {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            margin: 8px 0;
+        }
+
+        .checkbox input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .stat {
+            display: inline-block;
+            width: 32%;
+            text-align: center;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            margin: 5px 1%;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .score-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin: 5px;
+        }
+
+        .score-excellent {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .score-good {
+            background: #8BC34A;
+            color: white;
+        }
+
+        .score-average {
+            background: #FFC107;
+            color: white;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f0f0f0;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .center-text {
+            text-align: center;
+        }
+
+        .textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .result-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .result-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .mini-progress {
+            width: 100%;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .mini-progress-fill {
+            height: 100%;
+            background: #667eea;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .button-row .btn {
+            flex: 1;
+        }
+
+        @media (max-width: 600px) {
+            .stat {
+                width: 48%;
+                margin: 5px 1%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HOME SCREEN -->
+        <div class="screen active" id="homeScreen">
+            <div class="header">
+                <h1>🐃 Buffalo Milk Predictor</h1>
+                <p>AI-Powered Dairy Analysis</p>
+            </div>
+            <div class="content">
+                <div class="card" onclick="goToCapture()">
+                    <div class="card-icon">📸</div>
+                    <div class="card-content">
+                        <h3>Analyze Buffalo</h3>
+                        <p>Capture photos and analyze milk production</p>
+                    </div>
+                </div>
+
+                <div class="card" onclick="goToHistory()">
+                    <div class="card-icon">📋</div>
+                    <div class="card-content">
+                        <h3>Analysis History</h3>
+                        <p>View previous analyses and predictions</p>
+                    </div>
+                </div>
+
+                <div class="card" onclick="goToSettings()">
+                    <div class="card-icon">⚙️</div>
+                    <div class="card-content">
+                        <h3>Settings</h3>
+                        <p>Configure app preferences</p>
+                    </div>
+                </div>
+
+                <div style="background: #e3f2fd; border-radius: 12px; padding: 15px; margin-top: 20px;">
+                    <h4 style="color: #1976d2; margin-bottom: 8px;">📖 How it works</h4>
+                    <p style="font-size: 13px; color: #555;">Capture multiple photos from different angles (front, side, rear, udder, teats, legs). The AI analyzes milk production parameters including udder quality, body frame, health indicators, and more.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CAPTURE SCREEN -->
+        <div class="screen" id="captureScreen">
+            <div class="header">
+                <h1>📸 Capture Images</h1>
+                <p>Select angles you've captured</p>
+            </div>
+            <div class="content">
+                <div style="margin-bottom: 15px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <strong>Progress</strong>
+                        <span id="captureProgress">0/5</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="captureBar" style="width: 0%;"></div>
+                    </div>
+                    <small style="color: #666;">Select at least 5 required images</small>
+                </div>
+
+                <div class="section-title">Required Captures (5)</div>
+                <label class="checkbox">
+                    <input type="checkbox" id="front" onchange="updateProgress()"> 
+                    <span>📷 Front View - Full front of buffalo</span>
+                </label>
+                <label class="checkbox">
+                    <input type="checkbox" id="side" onchange="updateProgress()">
+                    <span>📷 Side View - Left or right profile</span>
+                </label>
+                <label class="checkbox">
+                    <input type="checkbox" id="rear" onchange="updateProgress()">
+                    <span>📷 Rear View - Back view of buffalo</span>
+                </label>
+                <label class="checkbox">
+                    <input type="checkbox" id="udder" onchange="updateProgress()">
+                    <span>🔍 Udder - Close-up of udder</span>
+                </label>
+                <label class="checkbox">
+                    <input type="checkbox" id="teats" onchange="updateProgress()">
+                    <span>🔍 Teats - Close-up of teats</span>
+                </label>
+
+                <div class="section-title">Optional Captures</div>
+                <label class="checkbox">
+                    <input type="checkbox" id="legs">
+                    <span>🦵 Legs - Front and hind legs</span>
+                </label>
+                <label class="checkbox">
+                    <input type="checkbox" id="face">
+                    <span>😊 Face - Head and face detail</span>
+                </label>
+
+                <div style="margin-top: 20px;">
+                    <label style="font-weight: 600; display: block; margin-bottom: 8px;">Notes (Optional)</label>
+                    <textarea class="textarea" id="captureNotes" placeholder="Add any observations..."></textarea>
+                </div>
+
+                <div class="button-row" style="margin-top: 20px;">
+                    <button class="btn btn-secondary" onclick="goToHome()">Cancel</button>
+                    <button class="btn btn-primary" id="analyzeBtn" onclick="goToAnalysis()" disabled>Analyze</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ANALYSIS SCREEN -->
+        <div class="screen" id="analysisScreen">
+            <div class="header">
+                <h1>⚙️ Analyzing...</h1>
+                <p>Processing images with AI</p>
+            </div>
+            <div class="content center-text">
+                <div style="margin: 40px 0;">
+                    <div class="loading-spinner" style="margin: 0 auto;"></div>
+                </div>
+
+                <div style="font-size: 24px; font-weight: 700; color: #667eea; margin-bottom: 10px;">
+                    <span id="progressPercent">0</span>%
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" id="analysisBar" style="width: 0%;"></div>
+                </div>
+
+                <div style="font-size: 16px; color: #666; margin-top: 20px;">
+                    <p id="stageName">Initializing AI models...</p>
+                </div>
+
+                <div style="background: #e3f2fd; border-radius: 12px; padding: 15px; margin-top: 20px; text-align: left;">
+                    <strong style="color: #1976d2;">🤖 Analyzing 17 parameters:</strong>
+                    <small style="display: block; color: #555; margin-top: 8px;">
+                        Breed ID • Body Frame • Udder Quality • Teat Structure • Legs • Disease Detection • Age • Pregnancy • And more...
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <!-- RESULT SCREEN -->
+        <div class="screen" id="resultScreen">
+            <div class="header">
+                <h1>✅ Results</h1>
+                <p>Analysis Complete</p>
+            </div>
+            <div class="content">
+                <!-- Overall Score -->
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 20px;">
+                    <div style="font-size: 14px; opacity: 0.9;">Overall Score</div>
+                    <div style="font-size: 48px; font-weight: bold; margin: 10px 0;">88%</div>
+                    <div style="font-size: 16px;">22+ L/day</div>
+                </div>
+
+                <!-- Recommendation -->
+                <div style="background: #4CAF50; color: white; border-radius: 12px; padding: 15px; text-align: center; margin-bottom: 20px;">
+                    <div style="font-size: 14px; opacity: 0.9;">Buying Recommendation</div>
+                    <div style="font-size: 28px; font-weight: bold; margin-top: 8px;">✅ EXCELLENT</div>
+                </div>
+
+                <div class="section-title">Detailed Scores</div>
+
+                <div class="result-item">
+                    <span class="result-label">Breed</span>
+                    <span class="result-value">Murrah - 92%</span>
+                </div>
+                <div class="mini-progress">
+                    <div class="mini-progress-fill" style="width: 92%;"></div>
+                </div>
+
+                <div class="result-item">
+                    <span class="result-label">Body Frame</span>
+                    <span class="result-value">85%</span>
+                </div>
+                <div class="mini-progress">
+                    <div class="mini-progress-fill" style="width: 85%;"></div>
+                </div>
+
+                <div class="result-item">
+                    <span class="result-label">Udder Quality</span>
+                    <span class="result-value">92%</span>
+                </div>
+                <div class="mini-progress">
+                    <div class="mini-progress-fill" style="width: 92%;"></div>
+                </div>
+
+                <div class="result-item">
+                    <span class="result-label">Teat Quality</span>
+                    <span class="result-value">88%</span>
+                </div>
+                <div class="mini-progress">
+                    <div class="mini-progress-fill" style="width: 88%;"></div>
+                </div>
+
+                <div class="result-item">
+                    <span class="result-label">Leg Quality</span>
+                    <span class="result-value">80%</span>
+                </div>
+                <div class="mini-progress">
+                    <div class="mini-progress-fill" style="width: 80%;"></div>
+                </div>
+
+                <div class="section-title">Health & Characteristics</div>
+
+                <div class="result-item">
+                    <span>🏥 Health Status</span>
+                    <span style="color: #4CAF50; font-weight: 600;">✓ No Issues</span>
+                </div>
+
+                <div class="result-item">
+                    <span>👶 Age Estimate</span>
+                    <span style="color: #667eea; font-weight: 600;">3-4 years</span>
+                </div>
+
+                <div class="result-item">
+                    <span>❤️ Pregnancy Status</span>
+                    <span style="color: #666; font-weight: 600;">Not Pregnant</span>
+                </div>
+
+                <div class="button-row" style="margin-top: 25px;">
+                    <button class="btn btn-primary" onclick="goToHome()">🏠 Home</button>
+                    <button class="btn btn-secondary" onclick="goToHistory()">📋 History</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- HISTORY SCREEN -->
+        <div class="screen" id="historyScreen">
+            <div class="header">
+                <h1>📋 History</h1>
+                <p>Previous Analyses</p>
+            </div>
+            <div class="content">
+                <div style="display: flex; justify-content: space-around; margin-bottom: 20px;">
+                    <div class="stat">
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">Total</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">Excellent</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">88%</div>
+                        <div class="stat-label">Avg Score</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🐃</div>
+                    <div class="card-content" style="flex: 1;">
+                        <h3>Murrah Buffalo</h3>
+                        <p>Today at 2:30 PM</p>
+                    </div>
+                    <span class="score-badge score-excellent">88%</span>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🐃</div>
+                    <div class="card-content" style="flex: 1;">
+                        <h3>Nili-Ravi Buffalo</h3>
+                        <p>Yesterday at 10:15 AM</p>
+                    </div>
+                    <span class="score-badge score-good">76%</span>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🐃</div>
+                    <div class="card-content" style="flex: 1;">
+                        <h3>Mehsana Buffalo</h3>
+                        <p>Dec 25, 2024</p>
+                    </div>
+                    <span class="score-badge score-average">62%</span>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🐃</div>
+                    <div class="card-content" style="flex: 1;">
+                        <h3>Surti Buffalo</h3>
+                        <p>Dec 23, 2024</p>
+                    </div>
+                    <span class="score-badge score-excellent">84%</span>
+                </div>
+
+                <button class="btn btn-primary" onclick="goToHome()" style="margin-top: 20px;">Back to Home</button>
+            </div>
+        </div>
+
+        <!-- SETTINGS SCREEN -->
+        <div class="screen" id="settingsScreen">
+            <div class="header">
+                <h1>⚙️ Settings</h1>
+                <p>App Preferences</p>
+            </div>
+            <div class="content">
+                <div class="section-title">Display</div>
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #f9f9f9; border-radius: 8px; margin-bottom: 10px;">
+                    <span>🌙 Dark Mode</span>
+                    <input type="checkbox" style="width: 20px; height: 20px;">
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #f9f9f9; border-radius: 8px; margin-bottom: 20px;">
+                    <span>🌐 Language</span>
+                    <select style="padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+                        <option>English</option>
+                        <option>Hindi</option>
+                        <option>Marathi</option>
+                    </select>
+                </div>
+
+                <div class="section-title">Notifications</div>
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #f9f9f9; border-radius: 8px; margin-bottom: 20px;">
+                    <span>🔔 Push Notifications</span>
+                    <input type="checkbox" checked style="width: 20px; height: 20px;">
+                </div>
+
+                <div class="section-title">Camera</div>
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #f9f9f9; border-radius: 8px; margin-bottom: 10px;">
+                    <div>
+                        <div>📷 Camera Quality</div>
+                        <small style="color: #666;">High - 1920x1080</small>
+                    </div>
+                    <span>▶</span>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #f9f9f9; border-radius: 8px; margin-bottom: 20px;">
+                    <div>
+                        <div>💾 Save Photos</div>
+                        <small style="color: #666;">Store locally</small>
+                    </div>
+                    <input type="checkbox" checked style="width: 20px; height: 20px;">
+                </div>
+
+                <div class="section-title">About</div>
+                <div style="background: #f9f9f9; border-radius: 8px; padding: 15px; margin-bottom: 10px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span>ℹ️ Version</span>
+                        <strong>1.0.0</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span>📱 App Size</span>
+                        <strong>45 MB</strong>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="goToHome()" style="margin-top: 20px;">Back to Home</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function goToHome() {
+            showScreen('homeScreen');
+        }
+
+        function goToCapture() {
+            showScreen('captureScreen');
+            document.getElementById('analyzeBtn').disabled = true;
+            updateProgress();
+        }
+
+        function goToAnalysis() {
+            showScreen('analysisScreen');
+            runAnalysis();
+        }
+
+        function goToResult() {
+            showScreen('resultScreen');
+        }
+
+        function goToHistory() {
+            showScreen('historyScreen');
+        }
+
+        function goToSettings() {
+            showScreen('settingsScreen');
+        }
+
+        function updateProgress() {
+            const required = ['front', 'side', 'rear', 'udder', 'teats'];
+            const checked = required.filter(id => document.getElementById(id).checked).length;
+            
+            document.getElementById('captureProgress').textContent = `${checked}/5`;
+            document.getElementById('captureBar').style.width = (checked / 5) * 100 + '%';
+            document.getElementById('analyzeBtn').disabled = checked < 5;
+        }
+
+        function runAnalysis() {
+            const stages = [
+                "Initializing AI models...",
+                "Analyzing breed characteristics...",
+                "Evaluating body frame...",
+                "Assessing udder quality...",
+                "Analyzing teat structure...",
+                "Evaluating leg quality...",
+                "Detecting health issues...",
+                "Analyzing walking pattern...",
+                "Estimating age...",
+                "Calculating milk production...",
+                "Generating recommendations...",
+                "Finalizing report..."
+            ];
+
+            let currentStage = 0;
+
+            const interval = setInterval(() => {
+                const progress = ((currentStage + 1) / stages.length) * 100;
+                document.getElementById('progressPercent').textContent = Math.round(progress);
+                document.getElementById('analysisBar').style.width = progress + '%';
+                document.getElementById('stageName').textContent = stages[currentStage];
+
+                currentStage++;
+
+                if (currentStage >= stages.length) {
+                    clearInterval(interval);
+                    setTimeout(() => goToResult(), 500);
+                }
+            }, 600);
+        }
+    </script>
+</body>
+</html>
