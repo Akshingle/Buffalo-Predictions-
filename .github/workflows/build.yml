@@ -22,7 +22,6 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-        cache: 'gradle'
     
     - name: Accept Android SDK licenses and install packages
       run: |
@@ -31,11 +30,15 @@ jobs:
     
     - name: Build APK
       run: |
-        # Fix Windows CRLF line endings in gradlew script
+        set -x
         sed -i 's/\r$//' gradlew
         chmod +x ./gradlew
         echo "sdk.dir=/usr/local/lib/android/sdk" > local.properties
-        ./gradlew assembleDebug --no-daemon
+        cat gradlew | head -3
+        file gradlew
+        java -version
+        ./gradlew --version || echo "GRADLEW VERSION FAILED"
+        ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 || exit 1
     
     - name: Upload APK to artifacts
       if: success()
