@@ -27,10 +27,16 @@ jobs:
     - name: Validate gradle wrapper
       uses: gradle/actions/wrapper-validation@v3
     
+    - name: Install SDK components
+      run: |
+        echo "Installing SDK components..."
+        yes | ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --licenses >/dev/null 2>&1 || true
+        ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager "platforms;android-34" "build-tools;34.0.0" >/dev/null 2>&1 || true
+    
     - name: Build APK
-      uses: gradle/actions/setup-gradle@v3
-      with:
-        arguments: clean assembleDebug --stacktrace
+      run: |
+        chmod +x ./gradlew
+        ./gradlew clean assembleDebug --stacktrace
     
     - name: Upload APK to artifacts
       if: success()
