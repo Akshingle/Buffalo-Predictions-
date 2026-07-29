@@ -36,7 +36,11 @@ jobs:
       uses: gradle/actions/setup-gradle@v3
     
     - name: Build APK
-      run: ./gradlew assembleDebug --stacktrace
+      run: ./gradlew assembleDebug --stacktrace 2>&1 | tee build.log
+    
+    - name: Show Build Output
+      if: always()
+      run: tail -200 build.log
     
     - name: Upload APK to artifacts
       if: success()
