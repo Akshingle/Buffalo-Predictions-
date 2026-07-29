@@ -30,12 +30,12 @@ fun CaptureScreen(navController: NavController) {
     val captureAngles = remember {
         mutableStateOf(listOf(
             CaptureAngle("Front View", "Full front of the buffalo", Icons.Default.FaceRetouchingNatural, true),
-            CaptureAngle("Side View", "Left or right side profile", Icons.Default.ViewSide, true),
-            CaptureAngle("Rear View", "Back view of buffalo", Icons.Default.ViewAgendaOutlined, true),
+            CaptureAngle("Side View", "Left or right side profile", Icons.Default.ViewDay, true),
+            CaptureAngle("Rear View", "Back view of buffalo", Icons.Default.ViewAgenda, true),
             CaptureAngle("Udder", "Close-up of udder", Icons.Default.ImageAspectRatio, true),
             CaptureAngle("Teats", "Close-up of teats", Icons.Default.TouchApp, true),
             CaptureAngle("Legs", "Front and hind legs", Icons.Default.TrackChanges, false),
-            CaptureAngle("Face", "Head and face detail", Icons.Default.FaceUnlock, false),
+            CaptureAngle("Face", "Head and face detail", Icons.Default.Face, false),
             CaptureAngle("Milk Veins", "Abdominal milk veins", Icons.Default.LineWeight, false)
         ))
     }
@@ -205,9 +205,7 @@ private fun CaptureAngleCard(
             else
                 MaterialTheme.colorScheme.surface
         ),
-        border = CardDefaults.outlinedCardBorder().copy(
-            brush = if (angle.isCapture) null else CardDefaults.outlinedCardBorder().brush
-        )
+        border = if (angle.isCapture) null else CardDefaults.outlinedCardBorder()
     ) {
         Row(
             modifier = Modifier

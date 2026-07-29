@@ -74,7 +74,7 @@ fun HistoryScreen(navController: NavController) {
                 verticalArrangement = Arrangement.Center
             ) {
                 Icon(
-                    imageVector = Icons.Default.HistoryOutlined,
+                    imageVector = Icons.Default.History,
                     contentDescription = null,
                     modifier = Modifier.size(80.dp),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant

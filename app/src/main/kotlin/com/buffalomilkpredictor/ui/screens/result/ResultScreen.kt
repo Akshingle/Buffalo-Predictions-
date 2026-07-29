@@ -310,7 +310,7 @@ private fun HealthInfoCard(
                 statusOk = !diseaseDetected
             )
             HealthInfoRow(
-                icon = Icons.Default.FaceUnlock,
+                icon = Icons.Default.Face,
                 label = "Age Estimate",
                 value = ageEstimate,
                 statusOk = true
