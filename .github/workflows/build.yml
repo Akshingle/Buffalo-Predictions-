@@ -24,14 +24,19 @@ jobs:
         distribution: 'temurin'
     
     - name: Setup Android SDK
-      uses: android-actions/setup-android@v3
+      uses: nttld/setup-ndk@v1
+      with:
+        ndk-version: r25b
+    
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v3
     
     - name: Build APK
       run: |
         set -o pipefail
         sed -i 's/\r$//' gradlew
         chmod +x ./gradlew
-        echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
+        echo "sdk.dir=/usr/local/lib/android/sdk" > local.properties
         
         # Run gradle and capture output, explicitly check exit code
         ./gradlew assembleDebug --no-daemon --stacktrace > /tmp/build.log 2>&1
