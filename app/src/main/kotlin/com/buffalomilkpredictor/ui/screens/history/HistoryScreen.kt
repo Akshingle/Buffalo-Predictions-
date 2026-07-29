@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.buffalomilkpredictor.ui.screens.history
 
 import androidx.compose.foundation.background
