@@ -23,17 +23,15 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
     
-    - name: Accept Android SDK licenses and install packages
-      run: |
-        yes | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --licenses 2>/dev/null || true
-        yes | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager "platforms;android-34" "build-tools;34.0.0" 2>/dev/null || true
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
     
     - name: Build APK
       run: |
         set -o pipefail
         sed -i 's/\r$//' gradlew
         chmod +x ./gradlew
-        echo "sdk.dir=/usr/local/lib/android/sdk" > local.properties
+        echo "sdk.dir=$ANDROID_SDK_ROOT" > local.properties
         
         # Run gradle and capture output, explicitly check exit code
         ./gradlew assembleDebug --no-daemon --stacktrace > /tmp/build.log 2>&1
